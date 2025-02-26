@@ -3,7 +3,7 @@
 @layer components{
     .navbar {
         /* @apply bg-linear-to-br/shorter  from-cyan-300  to-blue-400 ; */
-        background-color: rgba(0, 0, 0, 0.852);
+        background-color: rgba(0, 0, 0, 0.492);
         display: block;
         position: fixed;
         height: 4rem;

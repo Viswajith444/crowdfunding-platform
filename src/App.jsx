@@ -21,7 +21,7 @@ function App() {
   return (
     <>
       <Navbar items={inputItems} />
-      <main className="mt-[5rem]">
+      <main className="mt-[5rem] h-[200vh]">
         <Home />
       </main>
     </>
