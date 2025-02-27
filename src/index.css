@@ -6,7 +6,7 @@
         background-color: rgba(0, 0, 0, 0.492);
         display: block;
         position: fixed;
-        height: 4rem;
+        height: max-content;
         width: 100%;
         top: 0;
         z-index: 999;

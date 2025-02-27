@@ -5,17 +5,17 @@ function Navbar({ items }) {
     let itemElements = items.map((item, i) => (
         <li
             key={i}
-            className="ml-2 rounded-sm px-5 py-3 inset-ring-white blur-none hover:inset-ring-2"
+            className="not-first:ml-5 rounded-sm p-1 inset-ring-white blur-none hover:inset-ring-2 transition-[box-shadow] duration-150 nth-last-1:ml-auto"
         >
-            <Link to={item.link} className="text-xl">
-                {item.text}
+            <Link to={item.link} className="px-5 py-2">
+                <span className="text-xl">{item.text}</span>
             </Link>
         </li>
     ));
 
     return (
         <>
-            <nav className="navbar backdrop-blur-xs">
+            <nav className="navbar backdrop-blur-xs overflow-hidden px-10">
                 <ul>{itemElements}</ul>
             </nav>
         </>

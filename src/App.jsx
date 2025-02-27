@@ -13,8 +13,8 @@ function App() {
       text: "Home",
     },
     {
-      link: "/",
-      text: "Home",
+      link: "/Login",
+      text: "Login",
     },
   ];
 
