@@ -6,7 +6,7 @@ import "./index.css";
 import App from "./App.jsx";
 import Login from "./components/Login.jsx";
 import SignIn from "./components/SignIn.jsx";
-import Navbar from "./components/Navbar.jsx";
+// import Navbar from "./components/Navbar.jsx";
 
 const routes = createBrowserRouter([
   {
