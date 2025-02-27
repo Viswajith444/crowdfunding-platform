@@ -17,54 +17,55 @@ app.get("/", (req, res) => {
   res.send("Hello from backend!");
 });
 
-app.get("/lol", (_, res) =>{
-    res.send("😁😁😁😁");
-})
+// app.get("/lol", (_, res) =>{
+//     res.send("😁😁😁😁");
+// })
 
-app.post("/:id", async (req, res)=>{
-  const {id} = req.params;
-  const itsjson = req.body;
+// app.post("/:id", async (req, res)=>{
+//   const {id} = req.params;
+//   const itsjson = req.body;
 
 
 
-  console.log(id);
-  console.log(itsjson);
-  let x = await req_data.find(itsjson);
-  console.log(x);
-  res.status(200).send(x);
-})
+//   console.log(id);
+//   console.log(itsjson);
+//   let x = await req_data.find(itsjson);
+//   console.log(x);
+//   res.status(200).send(x);
+// })
 
 app.post("/userInfos/add", async(req, res) =>{
   const userInfo = req.body;
 
   console.log(userInfo);
-  // let [user, password] = [userInfo.username, userInfo.password];
 
-  let a = userModel.findOne({username: userInfo.username})
+  let a = await userModel.findOne({username: userInfo.username})
 
-  if(Object.entries(a).length !== 0){
-
-    res.status(201) // ok ig but not good
-        .send({message:"Username already exists", exists: true});
+  if(a !== null){
+    res.status(201) // ok ig, but not good
+        .send({message:`Username ${userInfo.username} already exists`, success: false});
     return;
   }
 
-  let newUser = new userModel(userInfo);
-  let x = await newUser.save();
+  if(a !== null && Object.entries(a) === 2){
 
-  console.log("Save document:" + x);
+    let newUser = new userModel(userInfo);
+    let x = await newUser.save();
 
-  res.status(200).json({message: "Valid"})
+    console.log("Saved document:" + x);
 
+    res.status(200)
+        .json({message: "New user account created", success: true})
+    return;
+  }
+
+  res.status(400).json({message: "Error", success: false})
 })
 
 app.post("/userInfos/chk", async(req, res) =>{
   const userInfo = req.body;
 
-  console.log(userInfo);
   let a = await userModel.findOne({username: userInfo.username})
-  console.log("hello");
-  console.log(a);
 
   if(a === null){
 
@@ -81,6 +82,8 @@ app.post("/userInfos/chk", async(req, res) =>{
     res.status(201).json({message: "Incorrect password", login: false})
     console.log("Incorrect Password");
   }
+
+  // could remove this 👇
   else{
     res.status(202).json({message:`Username "${userInfo.username}" does not exists`, login: false});
     console.log("idk error");
