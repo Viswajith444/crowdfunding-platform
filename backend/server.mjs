@@ -17,50 +17,48 @@ app.get("/", (req, res) => {
   res.send("Hello from backend!");
 });
 
-// app.get("/lol", (_, res) =>{
-//     res.send("😁😁😁😁");
-// })
-
-// app.post("/:id", async (req, res)=>{
-//   const {id} = req.params;
-//   const itsjson = req.body;
-
-
-
-//   console.log(id);
-//   console.log(itsjson);
-//   let x = await req_data.find(itsjson);
-//   console.log(x);
-//   res.status(200).send(x);
-// })
 
 app.post("/userInfos/add", async(req, res) =>{
   const userInfo = req.body;
 
+  if(userInfo.username === ""){
+    return;
+  }
   console.log(userInfo);
 
-  let a = await userModel.findOne({username: userInfo.username})
 
-  if(a !== null){
-    res.status(201) // ok ig, but not good
-        .send({message:`Username ${userInfo.username} already exists`, success: false});
-    return;
-  }
 
-  if(a !== null && Object.entries(a) === 2){
+  try{
 
-    let newUser = new userModel(userInfo);
-    let x = await newUser.save();
+      let a = await userModel.findOne({username: userInfo.username})
 
-    console.log("Saved document:" + x);
+      if(a !== null){
+          res.status(201) // ok ig, but not good
+          .json({message:`Username ${userInfo.username} already exists`, success: false});
+          return;
+        }
 
-    res.status(200)
-        .json({message: "New user account created", success: true})
-    return;
-  }
+        console.log(userInfo.password, userInfo.username);//debug
 
-  res.status(400).json({message: "Error", success: false})
+        if(userInfo.password && userInfo.username){
+
+            let newUser = new userModel(userInfo);
+            let x = await newUser.save();
+
+            console.log("Saved document:" + x);
+
+            res.status(200)
+            .json({message: "New user account created", success: true})
+            return;
+        }
+    }
+     catch(err){
+         res.status(400).json({message: "Error", success: false})
+        console.log(err);
+     }
 })
+
+
 
 app.post("/userInfos/chk", async(req, res) =>{
   const userInfo = req.body;
@@ -90,6 +88,9 @@ app.post("/userInfos/chk", async(req, res) =>{
   }
 
 })
+
+
+
 
 
 const PORT = 5000;

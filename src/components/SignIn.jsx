@@ -11,16 +11,16 @@ export default function SignIn() {
     const [message, setMessage] = useState("");
     const [message1, setMessage1] = useState("");
 
-    const [focus, setfocus] = useState(false);
+    const [isUsernameFocused, setIsUsernameFocused] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => {
+        const timeoutId = setTimeout(async () => {
             try {
-                const response = axios.post(
+                const response = await axios.post(
                     "http://localhost:5000/userInfos/add",
                     {
                         username: newUser,
-                    },
+                    }
                 );
 
                 const data = response.data;
@@ -33,25 +33,31 @@ export default function SignIn() {
             } catch (err) {
                 console.log(err);
             }
-        }, 5000);
+        }, 1000);
 
         return () => {
+            clearTimeout(timeoutId);
             setMessage1("");
         };
     }, [newUser]);
 
-    function formEventHandler() {
+    async function formEventHandler(e) {
+        e.preventDefault();
+
         if (newPassword !== repeatPassword) {
+            console.log(newPassword, repeatPassword);
             setMessage("Both password didn't match");
             return;
         }
 
         try {
-            const response = axios.post("http://localhost:5000/userInfos/add", {
+            const response = await axios.post("http://localhost:5000/userInfos/add", {
                 username: newUser,
+                password: newPassword
             });
 
             const data = response.data;
+            console.log(data, response.status);
 
             if (response.status === 201 && data.success === false) {
                 setMessage(data.message);
@@ -82,14 +88,14 @@ export default function SignIn() {
                             id="newUsername"
                             placeholder="Enter username"
                             value={newUser}
-                            onFocus={() => setfocus(true)}
+                            onFocus={() => setIsUsernameFocused(true)}
                             onChange={(e) => setNewUser(e.target.value)}
                             className="h-8 rounded-md pl-1 inset-ring-2 inset-ring-gray-400 placeholder:pl-1 placeholder:text-gray-400 invalid:border-pink-500 invalid:text-pink-600 focus:inset-ring-sky-400 focus:outline-2 focus:outline-offset-0 focus:outline-sky-500"
                             required
                         />
                     </label>
-                    {focus === true && message1 && (
-                        <p className="font-light text-pink-700 hover:underline">
+                    {isUsernameFocused === true && message1 && (
+                        <p className="font-light text-pink-700 -mt-4">
                             {message1}
                         </p>
                     )}
