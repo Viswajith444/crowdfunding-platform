@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
+@layer base{
+    body{
+        @apply bg-white;
+    }
+}
 @layer components {
     .navbar {
         /* @apply bg-linear-to-br/shorter  from-cyan-300  to-blue-400 ; */
-        background-color: rgba(0, 0, 0, 0.492);
+        background-color: rgba(0, 0, 0, 0.85);
         display: block;
         position: fixed;
         height: max-content;
@@ -13,12 +18,12 @@
         /* background: linear-gradient(135deg, black, #5e5e5e, rgb(66, 65, 65)); */
 
         & a {
-            font-size: medium;
-            font-weight: bold;
+            @apply text-sm;
+            font-weight: 400;
             display: block;
             text-align: center;
 
-            color: whitesmoke;
+            color: black;
         }
 
         & li,
@@ -47,6 +52,7 @@
 
             padding: 0 2rem;
             position: relative;
+            z-index: 1000;
         }
     }
 }

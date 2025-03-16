@@ -3,7 +3,6 @@
 
 import express from "express";
 import cors from "cors";
-// import mongoose from "mongoose"
 import {req_data, userModel} from "./model.mjs";
 
 const app = express();
@@ -34,7 +33,7 @@ app.post("/userInfos/add", async(req, res) =>{
 
       if(a !== null){
           res.status(201) // ok ig, but not good
-          .json({message:`Username ${userInfo.username} already exists`, success: false});
+          .json({message:`Username '${userInfo.username}' taken`, success: false});
           return;
         }
 

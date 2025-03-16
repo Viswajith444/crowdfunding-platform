@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import backgroundImage from "../assets/sign_and_login_background.jpg";
 
 export default function Login() {
+    const { login } = useContext(AuthContext);
+    console.log(login);
     const nav = useNavigate();
 
     const [username, setUsername] = useState("");
@@ -28,6 +32,7 @@ export default function Login() {
 
             if (response.status === 200 && data.login === true) {
                 console.log("Login successful");
+                login();
                 nav("/Home", { replace: true });
                 // Redirect or update the UI as needed
             } else if (response.status !== 201 || data.login === false) {
@@ -43,7 +48,13 @@ export default function Login() {
         }
     };
     return (
-        <main className="flex h-[100vh] w-full items-center justify-center bg-stone-200">
+        <main
+            className="flex h-[100vh] w-full items-center justify-center"
+            style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: "cover",
+            }}
+        >
             <div className="flex min-h-80 min-w-75 flex-col items-center gap-2 rounded-md bg-white drop-shadow-xl">
                 <h1 className="mt-5 text-3xl font-medium">Login</h1>
                 <form

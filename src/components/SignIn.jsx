@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+
+import backgroundImage from "../assets/sign_and_login_background.jpg";
 
 export default function SignIn() {
     const nav = useNavigate();
@@ -13,25 +15,43 @@ export default function SignIn() {
 
     const [isUsernameFocused, setIsUsernameFocused] = useState(false);
 
+    // Ref to store memoized messages based on usernames
+    const memoizedMessages = useRef({});
+
+    const memoMessage = useMemo(() => {
+        return memoizedMessages.current[newUser] || "";
+    }, [newUser]);
+
     useEffect(() => {
+        // If the memoized message already exists, use it
+        if (memoMessage) {
+            setMessage1(memoMessage);
+            return;
+        }
+
         const timeoutId = setTimeout(async () => {
             try {
                 const response = await axios.post(
                     "http://localhost:5000/userInfos/add",
                     {
                         username: newUser,
-                    }
+                    },
                 );
 
                 const data = response.data;
 
                 if (response.status === 201 && data.success === false) {
                     setMessage1(data.message);
+                    memoizedMessages.current[newUser] = data.message;
                 } else if (response.status === 200 && data.success === true) {
-                    setMessage1(""); // no need to display problem to the user
+                    setMessage1(""); // Clear message on success
+                    memoizedMessages.current[newUser] = "";
                 }
             } catch (err) {
-                console.log(err);
+                console.error("Error during username validation:", err);
+                setMessage1(
+                    "Unable to validate username. Please try again later.",
+                );
             }
         }, 1000);
 
@@ -39,25 +59,32 @@ export default function SignIn() {
             clearTimeout(timeoutId);
             setMessage1("");
         };
-    }, [newUser]);
+    }, [newUser, memoMessage]);
 
     async function formEventHandler(e) {
         e.preventDefault();
 
         if (newPassword !== repeatPassword) {
-            console.log(newPassword, repeatPassword);
-            setMessage("Both password didn't match");
+            setMessage("Both passwords didn't match");
+            return;
+        }
+
+        if (!newUser || !newPassword) {
+            setMessage("Username and password are required");
             return;
         }
 
         try {
-            const response = await axios.post("http://localhost:5000/userInfos/add", {
-                username: newUser,
-                password: newPassword
-            });
+            const response = await axios.post(
+                "http://localhost:5000/userInfos/add",
+                {
+                    username: newUser,
+                    password: newPassword,
+                },
+            );
 
             const data = response.data;
-            console.log(data, response.status);
+            console.log("Server response:", data);
 
             if (response.status === 201 && data.success === false) {
                 setMessage(data.message);
@@ -67,15 +94,21 @@ export default function SignIn() {
             if (response.status === 200 && data.success === true) {
                 setMessage(data.message);
                 nav("/Login", { replace: true }); // Success 🎊
-                return;
             }
         } catch (err) {
-            console.log(err);
+            console.error("Error during sign-in:", err);
+            setMessage("Unable to sign in. Please try again later.");
         }
     }
 
     return (
-        <main className="flex h-[100vh] w-full items-center justify-center bg-stone-200">
+        <main
+            className="flex h-[100vh] w-full items-center justify-center"
+            style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: "cover",
+            }}
+        >
             <div className="flex h-max w-max flex-col items-center gap-2 rounded-md bg-white px-18 py-5 drop-shadow-xl">
                 <h1 className="text-3xl font-medium">Sign In</h1>
                 <form
@@ -94,8 +127,8 @@ export default function SignIn() {
                             required
                         />
                     </label>
-                    {isUsernameFocused === true && message1 && (
-                        <p className="font-light text-pink-700 -mt-4">
+                    {newUser && isUsernameFocused === true && message1 && (
+                        <p className="-mt-3 font-light text-pink-700">
                             {message1}
                         </p>
                     )}
@@ -138,6 +171,12 @@ export default function SignIn() {
                         Submit
                     </button>
                 </form>
+
+                <Link to="/Login">
+                    <span className="-ml-[90%] self-start font-light text-sky-400 hover:underline">
+                        👈 back to login
+                    </span>
+                </Link>
             </div>
         </main>
     );
