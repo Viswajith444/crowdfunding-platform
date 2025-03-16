@@ -9,7 +9,6 @@ function Navbar({ items }) {
         if (item.text === "Login") {
             let state = isLoggedIn;
 
-            // item.link = "/SignIn";/
             return (
                 <li
                     key={i}

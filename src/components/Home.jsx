@@ -1,9 +1,9 @@
-// should try to #each of tailwindcss
+// should try to #each of tailwindcss or not
 // accept prop of project details
 
 export default function Home() {
     return (
-        <section className="mx-[5rem] grid gap-8 drop-shadow-lg *:aspect-5/4 *:rounded-md *:transition-all *:duration-200 *:hover:scale-102 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+        <section className="mr-[5rem] grid gap-8 drop-shadow-lg *:aspect-5/4 *:rounded-md *:transition-all *:duration-200 *:hover:scale-102 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
             <article className="bg-amber-200">
                 <img
                     src=""

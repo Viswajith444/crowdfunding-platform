@@ -4,6 +4,9 @@
     body{
         @apply bg-white;
     }
+    h1{
+        @apply text-2xl;
+    }
 }
 @layer components {
     .navbar {
