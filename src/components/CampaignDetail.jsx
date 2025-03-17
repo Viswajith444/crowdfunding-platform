@@ -164,7 +164,7 @@ function CampaignDetail() {
                     className="h-96 w-full object-cover object-center"
                     onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = {fallbackImage};
+                        e.target.src = null;
                     }}
                 />
             </div>
