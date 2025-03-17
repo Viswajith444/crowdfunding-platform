@@ -1,11 +1,14 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef , useContext} from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 import backgroundImage from "../assets/sign_and_login_background.jpg";
+import { AuthContext } from "./AuthContext";
 
 export default function SignIn() {
     const nav = useNavigate();
+
+    const {backendUrl} = useContext(AuthContext);
 
     const [newUser, setNewUser] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -15,7 +18,6 @@ export default function SignIn() {
 
     const [isUsernameFocused, setIsUsernameFocused] = useState(false);
 
-    // Ref to store memoized messages based on usernames
     const memoizedMessages = useRef({});
 
     const memoMessage = useMemo(() => {
@@ -23,7 +25,6 @@ export default function SignIn() {
     }, [newUser]);
 
     useEffect(() => {
-        // If the memoized message already exists, use it
         if (memoMessage) {
             setMessage1(memoMessage);
             return;
@@ -32,7 +33,7 @@ export default function SignIn() {
         const timeoutId = setTimeout(async () => {
             try {
                 const response = await axios.post(
-                    "http://localhost:5000/userInfos/add",
+                    backendUrl +"/userInfos/add",
                     {
                         username: newUser,
                     },
@@ -59,7 +60,7 @@ export default function SignIn() {
             clearTimeout(timeoutId);
             setMessage1("");
         };
-    }, [newUser, memoMessage]);
+    }, [newUser, memoMessage, backendUrl]);
 
     async function formEventHandler(e) {
         e.preventDefault();
@@ -76,7 +77,7 @@ export default function SignIn() {
 
         try {
             const response = await axios.post(
-                "http://localhost:5000/userInfos/add",
+                backendUrl +"/userInfos/add",
                 {
                     username: newUser,
                     password: newPassword,
@@ -163,9 +164,7 @@ export default function SignIn() {
 
                     <button
                         type="submit"
-                        // onClick={() => {
-                        //     nav("/Home", { replace: true });
-                        // }}
+
                         className="mt-5 w-20 rounded-md bg-sky-500 py-1 text-white hover:bg-sky-700 active:outline-3 active:outline-offset-1 active:outline-blue-500"
                     >
                         Submit

@@ -9,10 +9,7 @@ function App() {
             link: "/",
             text: "Home",
         },
-        {
-            link: "/",
-            text: "Home",
-        },
+
         {
             link: "/Login",
             text: "Login",

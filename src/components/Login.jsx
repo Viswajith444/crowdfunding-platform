@@ -5,7 +5,7 @@ import axios from "axios";
 import backgroundImage from "../assets/sign_and_login_background.jpg";
 
 export default function Login() {
-    const { login } = useContext(AuthContext);
+    const { login, backendUrl } = useContext(AuthContext);
     console.log(login);
     const nav = useNavigate();
 
@@ -17,13 +17,10 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            const response = await axios.post(
-                "http://localhost:5000/userInfos/chk",
-                {
-                    username,
-                    password,
-                },
-            );
+            const response = await axios.post(backendUrl + "/userInfos/chk", {
+                username,
+                password,
+            });
 
             const data = response.data;
 
