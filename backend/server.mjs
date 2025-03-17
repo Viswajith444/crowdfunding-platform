@@ -174,7 +174,7 @@ app.post("/userInfos/add", async(req, res) =>{
 
       if(a !== null){
           res.status(201) // ok ig, but not good
-          .json({message:`Username '${userInfo.username}' taken`, success: false});
+          .json({message:`Username '${userInfo.username}' already taken`, success: false});
           return;
         }
 
