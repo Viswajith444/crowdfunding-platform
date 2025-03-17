@@ -88,6 +88,68 @@ app.get("/campaigns/:id", async (req, res) => {
   }
 });
 
+app.post("/campaigns/:id/pledge", async (req, res) => {
+  try {
+    const { amount, rewardId } = req.body;
+
+    // Validate the request body
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      return res.status(400).json({
+        message: "Please provide a valid pledge amount",
+        success: false
+      });
+    }
+
+    const campaign = await Campaign.findById(req.params.id);
+    if (!campaign) {
+      return res.status(404).json({
+        message: "Campaign not found",
+        success: false
+      });
+    }
+
+    // Optional: Validate the reward if a rewardId is provided
+    if (rewardId) {
+      const rewardExists = campaign.rewards.some(reward => reward.id === rewardId);
+      if (!rewardExists) {
+        return res.status(400).json({
+          message: "Invalid reward selected",
+          success: false
+        });
+      }
+    }
+
+    // Update campaign with the new pledge
+    campaign.currentAmount += parseFloat(amount);
+    campaign.backers += 1;
+
+    // Optional: Record the pledge in a separate collection if you need to track individual pledges
+    // const pledge = new Pledge({
+    //   campaignId: campaign._id,
+    //   amount: parseFloat(amount),
+    //   rewardId,
+    //   pledgedAt: new Date()
+    // });
+    // await pledge.save();
+
+    // Save the updated campaign
+    await campaign.save();
+
+    res.status(200).json({
+      message: "Pledge successful",
+      success: true,
+      campaign
+    });
+  } catch (err) {
+    console.error("Error processing pledge:", err);
+    res.status(500).json({
+      message: "Error processing pledge",
+      success: false,
+      error: err.message
+    });
+  }
+});
+
 // Connect to MongoDB
 
 // Define a sample API route

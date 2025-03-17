@@ -11,6 +11,7 @@ function CampaignDetail() {
     const [error, setError] = useState(null);
     const [pledgeAmount, setPledgeAmount] = useState("");
     const [selectedReward, setSelectedReward] = useState(null);
+    const [isPledging, setIsPledging] = useState(false);
 
     const { backendUrl } = useContext(AuthContext);
 
@@ -33,7 +34,7 @@ function CampaignDetail() {
         };
 
         fetchCampaign();
-    }, [id]);
+    }, [id, backendUrl]);
 
     // Calculate days remaining for a campaign
     const calculateDaysRemaining = (deadline) => {
@@ -52,11 +53,39 @@ function CampaignDetail() {
 
     const handlePledge = async (e) => {
         e.preventDefault();
-        // In a real application, you would handle the pledge logic here
-        // For demonstration, we'll just show an alert
-        alert(`Thank you for pledging $${pledgeAmount}!`);
-        campaign.currentAmount += pledgeAmount;
-        setCampaign(campaign);
+
+        if (!pledgeAmount || pledgeAmount <= 0) {
+            alert("Please enter a valid pledge amount.");
+            return;
+        }
+
+        // Show loading state
+        setIsPledging(true);
+
+        try {
+            // Send pledge to backend
+            console.log(backendUrl);
+            await axios.post(backendUrl + `/campaigns/${id}/pledge`, {
+                amount: parseFloat(pledgeAmount),
+                rewardId: selectedReward ? selectedReward.id : null
+            });
+
+            // Refresh campaign data to show updated pledge amount
+            const response = await axios.get(backendUrl + `/campaigns/${id}`);
+            setCampaign(response.data);
+
+            // Reset form
+            setPledgeAmount("");
+            setSelectedReward(null);
+
+            // Show success message
+            alert("Thank you for your pledge! Your support is greatly appreciated.");
+        } catch (err) {
+            console.error("Error pledging to campaign:", err);
+            alert("There was an error processing your pledge. Please try again.");
+        } finally {
+            setIsPledging(false);
+        }
     };
 
     const selectReward = (reward) => {
@@ -234,18 +263,19 @@ function CampaignDetail() {
                                     value={pledgeAmount}
                                     onChange={(e) =>{
                                         setPledgeAmount(e.target.value);
-                                    }
-                                    }
+                                    }}
                                     className="w-full rounded border border-gray-300 p-2"
                                     min="1"
                                     required
+                                    disabled={isPledging}
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full rounded bg-green-600 py-3 font-medium text-white hover:bg-green-700"
+                                className="w-full rounded bg-green-600 py-3 font-medium text-white hover:bg-green-700 disabled:bg-gray-400"
+                                disabled={isPledging}
                             >
-                                Back this project
+                                {isPledging ? "Processing..." : "Back this project"}
                             </button>
                         </form>
                     </div>
@@ -307,6 +337,7 @@ function CampaignDetail() {
                             <button
                                 className="mt-4 w-full rounded bg-gray-100 py-2 font-medium text-gray-800 hover:bg-gray-200"
                                 onClick={() => selectReward(reward)}
+                                disabled={isPledging}
                             >
                                 Select this reward
                             </button>
