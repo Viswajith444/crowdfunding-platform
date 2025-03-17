@@ -4,10 +4,89 @@
 import express from "express";
 import cors from "cors";
 import {req_data, userModel} from "./model.mjs";
+import Campaign from "./campaignModel.mjs";
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Create a new campaign
+app.post("/campaigns/create", async (req, res) => {
+  try {
+    const campaignData = req.body;
+
+    // Handle file upload - in a real app, you would use a middleware like multer
+    // For now, assuming coverImage is a URL string
+
+    const newCampaign = new Campaign(campaignData);
+    const savedCampaign = await newCampaign.save();
+
+    res.status(201).json({
+      message: "Campaign created successfully",
+      success: true,
+      campaignId: savedCampaign._id
+    });
+  } catch (err) {
+    console.error("Error creating campaign:", err);
+    res.status(500).json({
+      message: "Error creating campaign",
+      success: false,
+      error: err.message
+    });
+  }
+});
+
+// Get all campaigns
+app.get("/campaigns", async (req, res) => {
+  try {
+    const campaigns = await Campaign.find().sort({ createdAt: -1 });
+    res.status(200).json(campaigns);
+  } catch (err) {
+    console.error("Error fetching campaigns:", err);
+    res.status(500).json({
+      message: "Error fetching campaigns",
+      success: false,
+      error: err.message
+    });
+  }
+});
+
+// Get campaigns by category
+app.get("/campaigns/category/:categoryId", async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const campaigns = await Campaign.find({ category: categoryId }).sort({ createdAt: -1 });
+    res.status(200).json(campaigns);
+  } catch (err) {
+    console.error("Error fetching campaigns by category:", err);
+    res.status(500).json({
+      message: "Error fetching campaigns by category",
+      success: false,
+      error: err.message
+    });
+  }
+});
+
+// Get campaign by ID
+app.get("/campaigns/:id", async (req, res) => {
+  try {
+    const campaign = await Campaign.findById(req.params.id);
+    if (!campaign) {
+      return res.status(404).json({
+        message: "Campaign not found",
+        success: false
+      });
+    }
+    res.status(200).json(campaign);
+  } catch (err) {
+    console.error("Error fetching campaign:", err);
+    res.status(500).json({
+      message: "Error fetching campaign",
+      success: false,
+      error: err.message
+    });
+  }
+});
 
 // Connect to MongoDB
 

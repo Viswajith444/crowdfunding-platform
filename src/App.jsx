@@ -16,6 +16,11 @@ function App() {
         },
 
         {
+            link: "/startCampaign",
+            text: "Start Campaign",
+        },
+
+        {
             link: "/Login",
             text: "Login",
         },

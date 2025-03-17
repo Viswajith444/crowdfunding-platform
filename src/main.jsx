@@ -10,7 +10,9 @@ import "./index.css";
 import App from "./App.jsx";
 import Login from "./components/Login.jsx";
 import SignIn from "./components/SignIn.jsx";
+import CampaignForm from "./components/CampaignForm.jsx";
 import { AuthProvider } from "./components/AuthContext.jsx";
+import CampaignDetail from "./components/CampaignDetail.jsx";
 // import Navbar from "./components/Navbar.jsx";
 
 const routes = createBrowserRouter([
@@ -36,6 +38,15 @@ const routes = createBrowserRouter([
     {
         path: "/SignIn",
         element: <SignIn />,
+    },
+    {
+        path: "/startCampaign",
+        element: <CampaignForm />,
+    },
+
+    {
+        path: "/campaign/:id",
+        element: <CampaignDetail />,
     },
 ]);
 
