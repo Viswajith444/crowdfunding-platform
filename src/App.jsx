@@ -29,7 +29,7 @@ function App() {
     return (
         <>
             <Navbar items={inputItems} />
-            <main className="ml-[3rem] mt-[5rem] h-[200vh]">
+            <main className="mx-[3rem] mt-[5rem] h-[200vh]">
                 <div className="border-b-1 border-gray-500 animate-appear">
                     <img src={IntroImage} alt="Intro" />
                 </div>
