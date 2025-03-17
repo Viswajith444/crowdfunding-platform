@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { format } from "date-fns"; // Make sure to install this package
 import { AuthContext } from "./AuthContext";
+import fallbackImage from "../assets/react.svg";
 
 function CampaignDetail() {
     const { id } = useParams();
@@ -163,7 +164,7 @@ function CampaignDetail() {
                     className="h-96 w-full object-cover object-center"
                     onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "/placeholder-image.jpg";
+                        e.target.src = {fallbackImage};
                     }}
                 />
             </div>

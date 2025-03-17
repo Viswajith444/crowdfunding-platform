@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
 
+import fallbackImage from "../assets/react.svg";
+
 function Home() {
   const [campaigns, setCampaigns] = useState([]);
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
@@ -194,7 +196,7 @@ function Home() {
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = '/placeholder-image.jpg';
+                    e.target.src = {fallbackImage};
                   }}
                 />
               </div>
